@@ -2,33 +2,26 @@ const path = require('path')
 const { getDefaultConfig } = require('expo/metro-config')
 
 const projectRoot = __dirname
-const workspaceRoot = path.resolve(projectRoot, '../../')
+const workspaceRoot = path.resolve(__dirname, '../../')
+
+// 1. Rutas absolutas a los paquetes externos que deben transpilarse
+const watchFolders = [workspaceRoot]
+
+// 2. Forzar a Metro a usar el `node_modules` del workspace, no del subpaquete
+const extraNodeModules = {
+  '@pospon/ui': path.join(workspaceRoot, 'packages/ui'),
+}
 
 const config = getDefaultConfig(projectRoot)
 
-// 👉 Añade watchFolders para que Metro observe el monorepo
-config.watchFolders = [workspaceRoot]
+config.watchFolders = watchFolders
 
-// 👉 Resuelve correctamente node_modules en monorepo
-config.resolver.nodeModulesPaths = [
-    path.resolve(projectRoot, 'node_modules'),
-    path.resolve(workspaceRoot, 'node_modules'),
-]
-
-// 👉 Añade extensiones si hay paquetes con .cjs, .mjs o SVGs
-config.resolver.sourceExts = [
-    ...config.resolver.sourceExts,
-    'cjs',
-    'mjs',
-    'svg',
-]
-
-// 👉 Opcional: evita errores al importar SVGs (si los usas)
-config.transformer = {
-    ...config.transformer,
-    babelTransformerPath: require.resolve('react-native-svg-transformer'),
+config.resolver.extraNodeModules = {
+  ...extraNodeModules,
+  react: path.join(workspaceRoot, 'node_modules/react'),
+  'react-native': path.join(workspaceRoot, 'node_modules/react-native'),
 }
 
-config.resolver.assetExts = config.resolver.assetExts.filter(ext => ext !== 'svg')
+config.resolver.sourceExts.push('cjs')
 
 module.exports = config

@@ -1,9 +1,10 @@
 {
-  "name": "ui",
+  "name": "@pospon/ui",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
-  "scripts": {
+  "main": "src/index.ts",
+  "private": true,
+    "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -12,5 +13,14 @@
   "packageManager": "pnpm@10.13.1",
   "dependencies": {
     "@babel/runtime": "^7.27.6"
+  },
+  "peerDependencies": {
+    "react": "19.1.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.8"
   }
 }
+
+
+
