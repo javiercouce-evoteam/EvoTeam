@@ -1,10 +1,17 @@
 {
-    "extends": "../../tsconfig.base.json",
+    "extends": "../../tsconfig.json",
     "compilerOptions": {
         "composite": true,
-        "outDir": "dist"
+        "outDir": "dist",
+        "jsx": "react-native",
+        "isolatedModules": true,
+        "strict": true,
+        "esModuleInterop": true,
+        "moduleResolution": "node",
+        "allowSyntheticDefaultImports": true,
     },
     "include": [
         "src"
     ]
 }
+  
