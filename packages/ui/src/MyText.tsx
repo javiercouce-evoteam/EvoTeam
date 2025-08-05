@@ -1,9 +1,6 @@
+import { Text } from 'tamagui'
+import type { FC, ReactNode } from 'react'
 
-import { styled, Text } from 'tamagui'
-import type { FC } from 'react'
-
-export const MyText:FC = styled(Text, {
-  name: 'Holaaaa',
-  color: '$color',
-  fontSize: 20,
-})
+export const MyText: FC<{ children: ReactNode }> = ({ children }) => {
+  return <Text>{children}</Text>
+}

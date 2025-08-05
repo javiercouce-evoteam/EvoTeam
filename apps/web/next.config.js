@@ -1,19 +1,15 @@
-import path from 'path'
-import type { NextConfig } from 'next'
-
-const nextConfig: NextConfig = {
+const nextConfig = {
   reactStrictMode: true,
-  experimental: {
+  env: {
+    TAMAGUI_CONFIG: '../../tamagui.config.ts',
   },
   webpack(config) {
-    // Alias para React Native Web
     config.resolve.alias = {
       ...(config.resolve.alias || {}),
       'react-native$': 'react-native-web',
       '@pospon/ui': path.resolve(__dirname, '../../packages/ui/src'),
     }
 
-    // Asegurarse de transpilar el paquete @pospon/ui
     config.module.rules.push({
       test: /\.[jt]sx?$/,
       include: [path.resolve(__dirname, '../../packages/ui')],
@@ -23,7 +19,17 @@ const nextConfig: NextConfig = {
           babelrc: false,
           configFile: false,
           presets: ['next/babel'],
-          plugins: ['@tamagui/babel-plugin'],
+          plugins: [
+            [
+              '@tamagui/babel-plugin',
+              {
+                components: ['@pospon/ui'],
+                config: '../../tamagui.config.ts',
+                importsWhitelist: ['constants.js', 'colors.js'],
+                logTimings: true,
+              },
+            ],
+          ],
         },
       },
     })
@@ -31,5 +37,3 @@ const nextConfig: NextConfig = {
     return config
   },
 }
-
-export default nextConfig
