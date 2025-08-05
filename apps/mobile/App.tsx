@@ -1,27 +1,24 @@
+import "./global.css"
+import { Text, View } from "react-native";
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-import { TamaguiProvider } from 'tamagui'
-import config from '../../tamagui.config'
-import { MyButton } from '@pospon/ui'
-
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on the app!</Text>
+    <View className="flex-1 items-center justify-center bg-gray-100 p-4">
       <StatusBar style="auto" />
-      <TamaguiProvider config={config}>
-      <MyButton />
-    </TamaguiProvider>
+      <View className="bg-white p-6 rounded-lg shadow-lg items-center min-w-80">
+        <Text className="text-2xl font-bold text-purple-600 mb-2">
+          Pospon App Mobile
+        </Text>
+        <Text className="text-lg text-blue-500 mb-4">
+          ¡NativeWind funcionando!
+        </Text>
+        <View className="bg-blue-500 px-6 py-3 rounded-lg">
+          <Text className="text-white font-semibold">
+            Botón con Tailwind
+          </Text>
+        </View>
+      </View>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
