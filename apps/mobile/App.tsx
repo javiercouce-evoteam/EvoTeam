@@ -1,24 +1,43 @@
 import "./global.css"
-import { Text, View } from "react-native";
 import { StatusBar } from 'expo-status-bar';
+import { TamaguiProvider, createTamagui } from 'tamagui'
+import { config as tamaguiConfig } from '@tamagui/config/v2'
+
+const config = createTamagui(tamaguiConfig)
+import { 
+  Header, 
+  Footer, 
+  HeroSection, 
+  FeaturesSection, 
+  StatsSection 
+} from '@pospon/ui'
+import { YStack, ScrollView } from 'tamagui'
 
 export default function App() {
   return (
-    <View className="flex-1 items-center justify-center bg-gray-100 p-4">
-      <StatusBar style="auto" />
-      <View className="bg-white p-6 rounded-lg shadow-lg items-center min-w-80">
-        <Text className="text-2xl font-bold text-purple-600 mb-2">
-          Pospon App Mobile
-        </Text>
-        <Text className="text-lg text-blue-500 mb-4">
-          ¡NativeWind funcionando!
-        </Text>
-        <View className="bg-blue-500 px-6 py-3 rounded-lg">
-          <Text className="text-white font-semibold">
-            Botón con Tailwind
-          </Text>
-        </View>
-      </View>
-    </View>
+    <TamaguiProvider config={config}>
+      <YStack flex={1} backgroundColor="$background">
+        <StatusBar style="auto" />
+        <Header title="Pospon" showNavigation={false} />
+        
+        <ScrollView flex={1}>
+          <YStack space="$0">
+            <HeroSection
+              title="Pospon Mobile"
+              subtitle="Gestión de proyectos en tu bolsillo"
+              description="Mantén el control de tus proyectos desde cualquier lugar. Sincronización en tiempo real con tu equipo."
+              primaryButtonText="Descargar App"
+              secondaryButtonText="Explorar"
+            />
+            
+            <StatsSection />
+            
+            <FeaturesSection />
+          </YStack>
+        </ScrollView>
+        
+        <Footer />
+      </YStack>
+    </TamaguiProvider>
   );
 }
