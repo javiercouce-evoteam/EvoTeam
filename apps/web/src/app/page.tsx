@@ -2,25 +2,39 @@
 
 import { TamaguiProvider } from 'tamagui'
 import config from 'tamagui.config'
-import { MyButton } from '@pospon/ui'
-import { MyText } from '@pospon/ui'
-
+import { 
+  Header, 
+  Footer, 
+  HeroSection, 
+  FeaturesSection, 
+  StatsSection 
+} from '@pospon/ui'
+import { YStack, ScrollView } from 'tamagui'
 
 export default function Page() {
   return (
     <TamaguiProvider config={config}>
-      <div className="p-8 bg-gray-100 min-h-screen">
-        <h1 className="text-5xl font-extrabold text-center text-transparent bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text mb-8">
-          Pospon App
-        </h1>
-        <h2 className="text-3xl font-bold underline text-blue-600 mb-4">
-          Hello world with Tailwind CSS!
-        </h2>
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <MyButton />
-          <MyText>Hello desde web</MyText>
-        </div>
-      </div>
+      <YStack flex={1} backgroundColor="$background">
+        <Header title="Pospon" showNavigation={true} />
+        
+        <ScrollView flex={1}>
+          <YStack space="$0">
+            <HeroSection
+              title="Revoluciona tu Productividad"
+              subtitle="La plataforma todo-en-uno para gestión de proyectos"
+              description="Desde la planificación hasta la ejecución, Pospon te ayuda a mantener tus proyectos organizados, tu equipo sincronizado y tus objetivos claros."
+              primaryButtonText="Comenzar Gratis"
+              secondaryButtonText="Ver Demo"
+            />
+            
+            <StatsSection />
+            
+            <FeaturesSection />
+          </YStack>
+        </ScrollView>
+        
+        <Footer />
+      </YStack>
     </TamaguiProvider>
   )
 }
