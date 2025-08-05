@@ -9,3 +9,6 @@
 ERROR ExceptionsManager should be set up after React DevTools to avoid console.error arguments mutation
 > ⚠️ This warning is known and has already been reported in the official repository.  
 > It will likely be resolved soon through updates to the SDK or DevTools.
+
+
+- Jira connected
