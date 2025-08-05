@@ -1,27 +1,24 @@
-const path = require('path')
-const { getDefaultConfig } = require('expo/metro-config')
+const { getDefaultConfig } = require("expo/metro-config");
+const { withNativeWind } = require('nativewind/metro');
+const path = require('path');
 
-const projectRoot = __dirname
-const workspaceRoot = path.resolve(__dirname, '../../')
+const config = getDefaultConfig(__dirname)
 
-// 1. Rutas absolutas a los paquetes externos que deben transpilarse
-const watchFolders = [workspaceRoot]
+// Configurar para trabajar con monorepo
+const projectRoot = __dirname;
+const workspaceRoot = path.resolve(projectRoot, '../..');
 
-// 2. Forzar a Metro a usar el `node_modules` del workspace, no del subpaquete
-const extraNodeModules = {
-  '@pospon/ui': path.join(workspaceRoot, 'packages/ui'),
-}
+config.watchFolders = [workspaceRoot];
+config.resolver.nodeModulesPaths = [
+  path.resolve(projectRoot, 'node_modules'),
+  path.resolve(workspaceRoot, 'node_modules'),
+];
 
-const config = getDefaultConfig(projectRoot)
+// Configurar resolución de archivos desde la raíz del workspace
+config.resolver.platforms = ['ios', 'android', 'native', 'web'];
+config.resolver.resolverMainFields = ['react-native', 'browser', 'main'];
 
-config.watchFolders = watchFolders
+// Agregar extensiones de archivo
+config.resolver.sourceExts = [...config.resolver.sourceExts, 'ts', 'tsx'];
 
-config.resolver.extraNodeModules = {
-  ...extraNodeModules,
-  react: path.join(workspaceRoot, 'node_modules/react'),
-  'react-native': path.join(workspaceRoot, 'node_modules/react-native'),
-}
-
-config.resolver.sourceExts.push('cjs')
-
-module.exports = config
+module.exports = withNativeWind(config, { input: './global.css' })

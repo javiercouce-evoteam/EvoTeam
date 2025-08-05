@@ -3,16 +3,22 @@
   "compilerOptions": {
     "strict": true,
     "baseUrl": ".",
-    "paths": {
-
-    },
+    "paths": {},
     "jsx": "react-native",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "noEmit": true
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
+    "isolatedModules": true
   },
-  "include": ["."],
-  "exclude": ["node_modules", "dist"]
+  "include": [
+    ".",
+    "nativewind-env.d.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }
