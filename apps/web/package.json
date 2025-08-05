@@ -13,7 +13,8 @@
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-native-web": "^0.20.0",
-    "tamagui": "^1.132.9"
+    "tamagui": "^1.132.9",
+    "@pospon/ui": "workspace:*"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
@@ -21,7 +22,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "15.4.1",
+    "eslint-config-next": "latest",
     "typescript": "^5"
   }
 }
