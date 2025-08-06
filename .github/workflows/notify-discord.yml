@@ -26,7 +26,7 @@ jobs:
             PR_TO="${{ github.base_ref }}"
             PR_COMMITS="${{ github.event.pull_request.commits }}"
 
-            curl -H "Content-Type: application/json" -X POST -d "$(jq -n \
+            jq -n \
               --arg title "🔀 Pull Request ${PR_ACTION^^}" \
               --arg desc "**$PR_TITLE**\n\n$PR_BODY" \
               --arg url "$PR_URL" \
@@ -46,8 +46,7 @@ jobs:
                     { name: "Commits", value: $commits, inline: true }
                   ]
                 }]
-              }'
-            )" $DISCORD_WEBHOOK
+              }' | curl -H "Content-Type: application/json" -X POST -d @- $DISCORD_WEBHOOK
 
           elif [ "$EVENT_NAME" = "push" ]; then
             REPO="${{ github.repository }}"
@@ -61,10 +60,10 @@ jobs:
               MESSAGE=$(echo $commit | jq -r '.message')
               URL=$(echo $commit | jq -r '.url')
               SHA=$(echo $commit | jq -r '.id' | cut -c1-7)
-              DESCRIPTION="${DESCRIPTION}• [\`${SHA}\`](${URL}) ${MESSAGE}\n"
+              DESCRIPTION="${DESCRIPTION}• [\`${SHA}\`](${URL}) ${MESSAGE}"$'\n'
             done <<< "$COMMITS"
 
-            curl -H "Content-Type: application/json" -X POST -d "$(jq -n \
+            jq -n \
               --arg title "📦 Push a $REF" \
               --arg desc "$DESCRIPTION" \
               '{
@@ -73,6 +72,4 @@ jobs:
                   description: $desc,
                   color: 3066993
                 }]
-              }'
-            )" $DISCORD_WEBHOOK
-          fi
+              }' | curl -H "Content-Type: application/json" -X POST -d @- $DISCORD_WEBHOOK
