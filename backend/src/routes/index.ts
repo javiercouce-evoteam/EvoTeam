@@ -21,8 +21,8 @@ router.get('/', (req: Request, res: Response<ApiResponse<object>>): void => {
         'Automated Deployment',
         'Health Monitoring',
         'Error Handling',
-        'Security Middlewares'
-      ]
+        'Security Middlewares',
+      ],
     },
   });
 });
