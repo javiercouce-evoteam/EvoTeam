@@ -2,6 +2,7 @@ import { Router } from 'express';
 import type { Request, Response } from 'express';
 import type { ApiResponse } from '@/types/index.js';
 import { getHealth } from '@/controllers/healthController.js';
+import authRoutes from './auth.routes.js';
 
 const router = Router();
 
@@ -17,6 +18,9 @@ router.get('/', (req: Request, res: Response<ApiResponse<string>>): void => {
 // Health check route
 router.get('/health', getHealth);
 
+// Authentication routes
+router.use('/auth', authRoutes);
+
 // API info route
 router.get('/info', (req: Request, res: Response<ApiResponse<object>>): void => {
   res.status(200).json({
@@ -30,6 +34,10 @@ router.get('/info', (req: Request, res: Response<ApiResponse<object>>): void => 
         health: '/api/health',
         info: '/api/info',
         root: '/api/',
+        login: '/api/auth/login',
+        register: '/api/auth/register',
+        logout: '/api/auth/logout',
+        profile: '/api/auth/profile',
       },
     },
   });

@@ -1,27 +1,18 @@
 import express from 'express';
-import cors from 'cors';
-import helmet from 'helmet';
 import morgan from 'morgan';
 import type { Application } from 'express';
 
 import { env, isDevelopment } from '@/utils/env.js';
 import { Logger } from '@/utils/logger.js';
 import { errorHandler, notFoundHandler } from '@/middlewares/errorHandler.js';
+import { applySecurity } from '@/middlewares/security.js';
 import apiRoutes from '@/routes/index.js';
 
 export const createApp = (): Application => {
   const app = express();
 
-  // Security middleware
-  app.use(helmet());
-
-  // CORS configuration
-  app.use(
-    cors({
-      origin: env.CORS_ORIGIN || 'http://localhost:3000',
-      credentials: true,
-    })
-  );
+  // Apply all security middleware
+  applySecurity(app);
 
   // Logging middleware
   if (isDevelopment) {
