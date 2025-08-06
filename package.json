@@ -7,9 +7,9 @@
 		"fresh": "pnpm clean:install",
 		"dev": "pnpm --filter web dev",
 		"build": "pnpm --filter web build",
-		"build:all": "pnpm -r build"
+		"build:all": "pnpm -r build",
+		"prepare": "husky"
 	},
-
 	"dependencies": {
 		"@babel/core": "^7.28.0",
 		"@tamagui/babel-plugin": "1.132.9",

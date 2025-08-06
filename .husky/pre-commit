@@ -1,0 +1,12 @@
+echo "🔍 Running pre-commit checks for backend..."
+
+echo "📝 Type checking..."
+pnpm --filter backend run type-check
+
+echo "🧹 Linting..."
+pnpm --filter backend run lint
+
+echo "💅 Format checking..."
+pnpm --filter backend run format:check
+
+echo "✅ All pre-commit checks passed!"

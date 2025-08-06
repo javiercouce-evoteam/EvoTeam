@@ -12,7 +12,7 @@ export const login = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { email, password, rememberMe } = req.validatedData!;
+    const { email, password: _password, rememberMe } = req.validatedData!;
 
     Logger.info(`Login attempt for email: ${email}`);
 
@@ -60,7 +60,12 @@ export const register = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { email, password, firstName, lastName } = req.validatedData!;
+    const {
+      email,
+      password: _password,
+      firstName,
+      lastName,
+    } = req.validatedData!;
 
     Logger.info(`Registration attempt for email: ${email}`);
 

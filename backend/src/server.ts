@@ -1,11 +1,12 @@
 import express from 'express';
-import morgan from 'morgan';
 import type { Application } from 'express';
 
-import { env, isDevelopment } from '@/utils/env.js';
+import { env } from './utils/env.js';
 import { Logger } from '@/utils/logger.js';
 import { errorHandler, notFoundHandler } from '@/middlewares/errorHandler.js';
 import { applySecurity } from '@/middlewares/security.js';
+import { assignRequestId } from '@/middlewares/assignRequestId.js';
+import { requestLogger } from '@/middlewares/requestLogger.js';
 import apiRoutes from '@/routes/index.js';
 
 export const createApp = (): Application => {
@@ -14,12 +15,11 @@ export const createApp = (): Application => {
   // Apply all security middleware
   applySecurity(app);
 
-  // Logging middleware
-  if (isDevelopment) {
-    app.use(morgan('dev'));
-  } else {
-    app.use(morgan('combined'));
-  }
+  // Request ID assignment (must be first)
+  app.use(assignRequestId);
+
+  // Request logging middleware
+  app.use(requestLogger);
 
   // Body parsing middleware
   app.use(express.json({ limit: '10mb' }));

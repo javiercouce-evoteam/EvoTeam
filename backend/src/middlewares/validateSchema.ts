@@ -23,26 +23,28 @@ export const validateSchema = <T>(
   return (req: Request, res: Response, next: NextFunction): void => {
     try {
       const dataToValidate = req[source];
-      
+
       // Parse and validate the data
       const validatedData = schema.parse(dataToValidate);
-      
+
       // Attach validated data to request object
       (req as ValidatedRequest<T>).validatedData = validatedData;
-      
+
       // Replace the original data with sanitized/validated data
       req[source] = validatedData;
-      
+
       next();
     } catch (error) {
       if (error instanceof Error && 'issues' in error) {
         const zodError = error as ZodError;
-        
-        const validationErrors: ValidationError[] = zodError.issues.map((issue) => ({
-          field: issue.path.join('.'),
-          message: issue.message,
-          code: issue.code,
-        }));
+
+        const validationErrors: ValidationError[] = zodError.issues.map(
+          issue => ({
+            field: issue.path.join('.'),
+            message: issue.message,
+            code: issue.code,
+          })
+        );
 
         res.status(400).json({
           success: false,
@@ -66,17 +68,17 @@ export const validateSchema = <T>(
 /**
  * Utility function to create a validation middleware for request body
  */
-export const validateBody = <T>(schema: ZodSchema<T>) => 
+export const validateBody = <T>(schema: ZodSchema<T>) =>
   validateSchema(schema, 'body');
 
 /**
  * Utility function to create a validation middleware for query parameters
  */
-export const validateQuery = <T>(schema: ZodSchema<T>) => 
+export const validateQuery = <T>(schema: ZodSchema<T>) =>
   validateSchema(schema, 'query');
 
 /**
  * Utility function to create a validation middleware for route parameters
  */
-export const validateParams = <T>(schema: ZodSchema<T>) => 
+export const validateParams = <T>(schema: ZodSchema<T>) =>
   validateSchema(schema, 'params');
