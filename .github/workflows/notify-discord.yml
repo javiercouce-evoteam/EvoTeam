@@ -10,12 +10,40 @@ jobs:
   notify:
     runs-on: ubuntu-latest
     steps:
-      - name: Send message to Discord
+      - name: Format and send Discord message
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_GITHUB }}
-          COMMIT_URL: https://github.com/${{ github.repository }}/commit/${{ github.sha }}
         run: |
-          curl -H "Content-Type: application/json" \
-            -X POST \
-            -d "{\"content\": \"📣 Evento en \`${{ github.repository }}\`\n🧑 Autor: \`${{ github.actor }}\`\n🔁 Rama: \`${{ github.ref_name }}\`\n📦 Commit: $COMMIT_URL\"}" \
-            $DISCORD_WEBHOOK
+          echo "✅ Evento: ${{ github.event_name }}"
+
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            curl -H "Content-Type: application/json" \
+              -X POST \
+              -d '{
+                "content": "**🔀 Nueva Pull Request**",
+                "embeds": [
+                  {
+                    "title": "${{ github.event.pull_request.title }}",
+                    "description": "🧑 Autor: `${{ github.actor }}`\n🔁 Rama: `${{ github.head_ref }}`",
+                    "url": "${{ github.event.pull_request.html_url }}",
+                    "color": 5814783
+                  }
+                ]
+              }' \
+              $DISCORD_WEBHOOK
+          else
+            curl -H "Content-Type: application/json" \
+              -X POST \
+              -d '{
+                "content": "**📦 Push a main**",
+                "embeds": [
+                  {
+                    "title": "Commit: ${{ github.event.head_commit.message }}",
+                    "description": "🧑 Autor: `${{ github.actor }}`\n🔁 Rama: `${{ github.ref_name }}`",
+                    "url": "https://github.com/${{ github.repository }}/commit/${{ github.sha }}",
+                    "color": 3066993
+                  }
+                ]
+              }' \
+              $DISCORD_WEBHOOK
+          fi
