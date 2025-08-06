@@ -38,9 +38,15 @@ router.get('/info', (req: Request, res: Response<ApiResponse<object>>): void => 
         register: '/api/auth/register',
         logout: '/api/auth/logout',
         profile: '/api/auth/profile',
+        debugError: '/api/debug-error',
       },
     },
   });
+});
+
+// Debug error route for testing logging
+router.get('/debug-error', (req: Request, res: Response): void => {
+  throw new Error('Simulated error for logging test');
 });
 
 export default router;

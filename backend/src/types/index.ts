@@ -1,4 +1,5 @@
 // Global types and interfaces
+import type { Request } from 'express';
 
 export interface ApiResponse<T = unknown> {
   success: boolean;
@@ -14,6 +15,12 @@ export interface RequestWithUser extends Request {
     role: string;
   };
 }
+
+export interface RequestWithId extends Request {
+  requestId: string;
+}
+
+export interface RequestWithUserAndId extends RequestWithUser, RequestWithId {}
 
 export interface ErrorResponse {
   success: false;

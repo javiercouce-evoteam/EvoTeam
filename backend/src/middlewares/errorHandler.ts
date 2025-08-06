@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from 'express';
-import type { ErrorResponse } from '@/types/index.js';
-import { Logger } from '@/utils/logger.js';
+import type { ErrorResponse, RequestWithId } from '@/types/index.js';
+import { logger } from '@/utils/logger.js';
 import { env } from '@/utils/env.js';
 
 export class AppError extends Error {
@@ -30,7 +30,21 @@ export const errorHandler = (
     message = err.message;
   }
 
-  Logger.error(`Error ${statusCode}: ${message}`, err);
+  // Get requestId from request
+  const requestId = (req as RequestWithId).requestId;
+  
+  // Create child logger with request context
+  const requestLogger = requestId ? logger.child({ requestId }) : logger;
+  
+  // Log error with context
+  requestLogger.error({
+    err,
+    statusCode,
+    method: req.method,
+    url: req.originalUrl || req.url,
+    userAgent: req.get('User-Agent'),
+    ip: req.ip || req.connection.remoteAddress,
+  }, `Error ${statusCode}: ${message}`);
 
   const errorResponse: ErrorResponse = {
     success: false,
