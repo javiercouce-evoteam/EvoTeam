@@ -1,22 +1,21 @@
-name: Discord Notifications
+name: Discord Notification
 
 on:
+  push:
+    branches: [main]
   pull_request:
     types: [opened, closed, reopened]
-  push:
-    branches:
-      - main
 
 jobs:
   notify:
     runs-on: ubuntu-latest
     steps:
-      - name: Notify Discord on PR or Push
-        uses: Ilshidur/action-discord@master
-        with:
-          webhook: ${{ secrets.DISCORD_WEBHOOK_GITHUB }}
-          message: |
-            📣 **Nuevo evento en `${{ github.repository }}`**
-            🧑 Autor: `${{ github.actor }}`
-            🔁 Rama: `${{ github.ref_name }}`
-            📦 Commit: https://github.com/${{ github.repository }}/commit/${{ github.sha }}
+      - name: Send message to Discord
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_GITHUB }}
+          COMMIT_URL: https://github.com/${{ github.repository }}/commit/${{ github.sha }}
+        run: |
+          curl -H "Content-Type: application/json" \
+            -X POST \
+            -d "{\"content\": \"📣 Evento en \`${{ github.repository }}\`\n🧑 Autor: \`${{ github.actor }}\`\n🔁 Rama: \`${{ github.ref_name }}\`\n📦 Commit: $COMMIT_URL\"}" \
+            $DISCORD_WEBHOOK
