@@ -4,46 +4,56 @@ on:
   push:
     branches: [main]
   pull_request:
-    types: [opened, closed, reopened]
+    types: [opened, closed, reopened, synchronize]
 
 jobs:
   notify:
     runs-on: ubuntu-latest
     steps:
-      - name: Format and send Discord message
+      - name: Send Discord notification
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_GITHUB }}
         run: |
-          echo "✅ Evento: ${{ github.event_name }}"
+          EVENT_NAME="${{ github.event_name }}"
 
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            curl -H "Content-Type: application/json" \
-              -X POST \
-              -d '{
-                "content": "**🔀 Nueva Pull Request**",
-                "embeds": [
-                  {
-                    "title": "${{ github.event.pull_request.title }}",
-                    "description": "🧑 Autor: `${{ github.actor }}`\n🔁 Rama: `${{ github.head_ref }}`",
-                    "url": "${{ github.event.pull_request.html_url }}",
-                    "color": 5814783
-                  }
-                ]
-              }' \
-              $DISCORD_WEBHOOK
-          else
-            curl -H "Content-Type: application/json" \
-              -X POST \
-              -d '{
-                "content": "**📦 Push a main**",
-                "embeds": [
-                  {
-                    "title": "Commit: ${{ github.event.head_commit.message }}",
-                    "description": "🧑 Autor: `${{ github.actor }}`\n🔁 Rama: `${{ github.ref_name }}`",
-                    "url": "https://github.com/${{ github.repository }}/commit/${{ github.sha }}",
-                    "color": 3066993
-                  }
-                ]
-              }' \
-              $DISCORD_WEBHOOK
-          fi
+          if [ "$EVENT_NAME" = "pull_request" ]; then
+            PR_TITLE="${{ github.event.pull_request.title }}"
+            PR_BODY="${{ github.event.pull_request.body }}"
+            PR_URL="${{ github.event.pull_request.html_url }}"
+            PR_AUTHOR="${{ github.event.pull_request.user.login }}"
+            PR_ACTION="${{ github.event.action }}"
+            PR_FROM="${{ github.head_ref }}"
+            PR_TO="${{ github.base_ref }}"
+            PR_COMMITS="${{ github.event.pull_request.commits }}"
+
+            curl -H "Content-Type: application/json" -X POST -d "{
+              \"content\": null,
+              \"embeds\": [
+                {
+                  \"title\": \"🔀 Pull Request ${PR_ACTION^^}\",
+                  \"description\": \"**${PR_TITLE}**\n\n${PR_BODY}\",
+                  \"url\": \"${PR_URL}\",
+                  \"color\": 5814783,
+                  \"fields\": [
+                    { \"name\": \"Autor\", \"value\": \"${PR_AUTHOR}\", \"inline\": true },
+                    { \"name\": \"Rama origen → destino\", \"value\": \"${PR_FROM} → ${PR_TO}\", \"inline\": true },
+                    { \"name\": \"Commits\", \"value\": \"${PR_COMMITS}\", \"inline\": true }
+                  ]
+                }
+              ]
+            }" $DISCORD_WEBHOOK
+
+          elif [ "$EVENT_NAME" = "push" ]; then
+            REPO="${{ github.repository }}"
+            AUTHOR="${{ github.actor }}"
+            REF="${{ github.ref_name }}"
+            COMMITS=$(jq -c '.commits[]' "$GITHUB_EVENT_PATH")
+
+            DESCRIPTION="🧑 Autor: \`${AUTHOR}\`\n🔁 Rama: \`${REF}\`\n📦 Commits:\n"
+
+            while IFS= read -r commit; do
+              MESSAGE=$(echo $commit | jq -r '.message')
+              URL=$(echo $commit | jq -r '.url')
+              SHA=$(echo $commit | jq -r '.id' | cut -c1-7)
+              DESCRIPTION="${DESCRIPTION}• [\`${SHA}\`](${URL}) ${MESSAGE}\n"
+            done <<< "$COMMITS"
