@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
   pull_request:
-    types: [opened, closed, reopened, synchronize]
+    types: [opened, closed]
 
 jobs:
   notify:
@@ -17,39 +17,57 @@ jobs:
           EVENT_NAME="${{ github.event_name }}"
 
           if [ "$EVENT_NAME" = "pull_request" ]; then
+            PR_ACTION="${{ github.event.action }}"
+            PR_MERGED="${{ github.event.pull_request.merged }}"
             PR_TITLE="${{ github.event.pull_request.title }}"
             PR_BODY="${{ github.event.pull_request.body }}"
             PR_URL="${{ github.event.pull_request.html_url }}"
             PR_AUTHOR="${{ github.event.pull_request.user.login }}"
-            PR_ACTION="${{ github.event.action }}"
             PR_FROM="${{ github.head_ref }}"
             PR_TO="${{ github.base_ref }}"
             PR_COMMITS="${{ github.event.pull_request.commits }}"
 
-            {
-              echo "**$PR_TITLE**"
-              echo
-              echo "$PR_BODY"
-            } | jq -Rs \
-              --arg title "🔀 Pull Request ${PR_ACTION^^}" \
-              --arg url "$PR_URL" \
-              --arg author "$PR_AUTHOR" \
-              --arg from "$PR_FROM" \
-              --arg to "$PR_TO" \
-              --arg commits "$PR_COMMITS" \
-              '{
-                embeds: [{
-                  title: $title,
-                  description: .,
-                  url: $url,
-                  color: 5814783,
-                  fields: [
-                    { name: "Autor", value: $author, inline: true },
-                    { name: "Rama origen → destino", value: "\($from) → \($to)", inline: true },
-                    { name: "Commits", value: $commits, inline: true }
-                  ]
-                }]
-              }' | curl -H "Content-Type: application/json" -X POST -d @- $DISCORD_WEBHOOK
+            if [ "$PR_ACTION" = "opened" ]; then
+              {
+                echo "**$PR_TITLE**"
+                echo
+                echo "$PR_BODY"
+              } | jq -Rs \
+                --arg title "🔀 Pull Request Abierta" \
+                --arg url "$PR_URL" \
+                --arg author "$PR_AUTHOR" \
+                --arg from "$PR_FROM" \
+                --arg to "$PR_TO" \
+                --arg commits "$PR_COMMITS" \
+                '{
+                  embeds: [{
+                    title: $title,
+                    description: .,
+                    url: $url,
+                    color: 5814783,
+                    fields: [
+                      { name: "Autor", value: $author, inline: true },
+                      { name: "Rama origen → destino", value: "\($from) → \($to)", inline: true },
+                      { name: "Commits", value: $commits, inline: true }
+                    ]
+                  }]
+                }' | curl -H "Content-Type: application/json" -X POST -d @- $DISCORD_WEBHOOK
+            elif [ "$PR_ACTION" = "closed" ] && [ "$PR_MERGED" = "true" ]; then
+              jq -n \
+                --arg title "🎉 Pull Request Mergeada" \
+                --arg url "$PR_URL" \
+                --arg author "$PR_AUTHOR" \
+                --arg from "$PR_FROM" \
+                --arg to "$PR_TO" \
+                '{
+                  embeds: [{
+                    title: $title,
+                    description: "🚀 \($from) → \($to)\n🧑 Autor: \($author)",
+                    url: $url,
+                    color: 15844367
+                  }]
+                }' | curl -H "Content-Type: application/json" -X POST -d @- $DISCORD_WEBHOOK
+            fi
 
           elif [ "$EVENT_NAME" = "push" ]; then
             REPO="${{ github.repository }}"
