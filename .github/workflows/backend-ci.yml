@@ -76,7 +76,8 @@ jobs:
           fi
 
       - name: 🔒 Security audit (Backend only)
-        run: pnpm audit --audit-level moderate
+        working-directory: ./backend
+        run: pnpm audit --audit-level moderate --ignore-workspace
 
       - name: 📊 Bundle size check
         run: |
