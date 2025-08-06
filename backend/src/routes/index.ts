@@ -6,12 +6,24 @@ import authRoutes from './auth.routes.js';
 
 const router = Router();
 
-// Hello World route
-router.get('/', (req: Request, res: Response<ApiResponse<string>>): void => {
+// Hello World route - Updated for CI/CD Testing
+router.get('/', (req: Request, res: Response<ApiResponse<object>>): void => {
   res.status(200).json({
     success: true,
-    message: 'Welcome to Pospon API',
-    data: 'Hello World! 🚀',
+    message: 'Welcome to Pospon API - CI/CD Test Version',
+    data: {
+      greeting: 'Hello World! 🚀✨',
+      version: '1.1.0-test',
+      deployment: 'CI/CD Pipeline Test',
+      timestamp: new Date().toISOString(),
+      environment: process.env.NODE_ENV || 'development',
+      features: [
+        'Automated Deployment',
+        'Health Monitoring',
+        'Error Handling',
+        'Security Middlewares',
+      ],
+    },
   });
 });
 
