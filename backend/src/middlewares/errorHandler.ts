@@ -20,7 +20,7 @@ export const errorHandler = (
   err: Error | AppError,
   req: Request,
   res: Response<ErrorResponse>,
-  next: NextFunction
+  _next: NextFunction
 ): void => {
   let statusCode = 500;
   let message = 'Internal Server Error';
@@ -32,19 +32,22 @@ export const errorHandler = (
 
   // Get requestId from request
   const requestId = (req as RequestWithId).requestId;
-  
+
   // Create child logger with request context
   const requestLogger = requestId ? logger.child({ requestId }) : logger;
-  
+
   // Log error with context
-  requestLogger.error({
-    err,
-    statusCode,
-    method: req.method,
-    url: req.originalUrl || req.url,
-    userAgent: req.get('User-Agent'),
-    ip: req.ip || req.connection.remoteAddress,
-  }, `Error ${statusCode}: ${message}`);
+  requestLogger.error(
+    {
+      err,
+      statusCode,
+      method: req.method,
+      url: req.originalUrl || req.url,
+      userAgent: req.get('User-Agent'),
+      ip: req.ip || req.connection.remoteAddress,
+    },
+    `Error ${statusCode}: ${message}`
+  );
 
   const errorResponse: ErrorResponse = {
     success: false,
@@ -59,8 +62,8 @@ export const errorHandler = (
 export const notFoundHandler = (
   req: Request,
   res: Response<ErrorResponse>,
-  next: NextFunction
+  _next: NextFunction
 ): void => {
   const error = new AppError(`Route ${req.originalUrl} not found`, 404);
-  next(error);
+  _next(error);
 };

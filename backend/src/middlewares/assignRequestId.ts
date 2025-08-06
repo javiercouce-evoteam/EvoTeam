@@ -17,12 +17,12 @@ export const assignRequestId = (
 ): void => {
   // Generate unique request ID
   const requestId = uuidv4();
-  
+
   // Assign to request object
   (req as RequestWithId).requestId = requestId;
-  
+
   // Add to response headers for client tracking
   res.setHeader('X-Request-ID', requestId);
-  
+
   next();
 };

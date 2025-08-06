@@ -9,11 +9,13 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "clean": "rimraf dist",
-    "lint": "eslint src --ext .ts",
-    "lint:fix": "eslint src --ext .ts --fix",
+    "lint": "eslint \"src/**/*.ts\"",
+    "lint:fix": "eslint \"src/**/*.ts\" --fix",
     "format": "prettier --write \"src/**/*.ts\"",
     "format:check": "prettier --check \"src/**/*.ts\"",
     "type-check": "tsc --noEmit",
+    "pre-commit": "pnpm run type-check && pnpm run lint && pnpm run format:check",
+    "prepare": "cd .. && husky",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -40,6 +42,7 @@
     "zod": "^3.24.1"
   },
   "devDependencies": {
+    "@eslint/js": "^9.32.0",
     "@types/cors": "2.8.17",
     "@types/express": "5.0.0",
     "@types/hpp": "^0.2.6",
@@ -51,6 +54,7 @@
     "eslint": "9.18.0",
     "eslint-config-prettier": "9.1.0",
     "eslint-plugin-prettier": "5.2.1",
+    "husky": "^9.1.7",
     "prettier": "3.4.2",
     "rimraf": "6.0.1",
     "tsx": "4.19.2",

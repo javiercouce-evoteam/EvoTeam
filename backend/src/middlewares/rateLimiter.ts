@@ -1,5 +1,6 @@
-import rateLimit from 'express-rate-limit';
-import { env, isDevelopment } from '@/utils/env.js';
+import { rateLimit } from 'express-rate-limit';
+
+const isDevelopment = process.env.NODE_ENV !== 'production';
 
 // General rate limiter
 export const generalLimiter = rateLimit({
@@ -11,7 +12,7 @@ export const generalLimiter = rateLimit({
   },
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
-  skip: (req) => {
+  skip: req => {
     // Skip rate limiting for health checks
     return req.path === '/api/health';
   },
@@ -22,7 +23,8 @@ export const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: isDevelopment ? 100 : 5, // Limit each IP to 5 login attempts per windowMs in production
   message: {
-    error: 'Too many authentication attempts from this IP, please try again later.',
+    error:
+      'Too many authentication attempts from this IP, please try again later.',
     retryAfter: '15 minutes',
   },
   standardHeaders: true,

@@ -49,16 +49,16 @@ export const applySecurity = (app: Application): void => {
       origin: (origin, callback) => {
         // Allow requests with no origin (mobile apps, Postman, etc.)
         if (!origin) return callback(null, true);
-        
+
         if (allowedOrigins.includes(origin)) {
           return callback(null, true);
         }
-        
+
         // In development, be more permissive
         if (isDevelopment) {
           return callback(null, true);
         }
-        
+
         return callback(new Error('Not allowed by CORS'));
       },
       credentials: true,
@@ -83,13 +83,7 @@ export const applySecurity = (app: Application): void => {
   // HTTP Parameter Pollution protection
   app.use(
     hpp({
-      whitelist: [
-        'sort',
-        'fields',
-        'page',
-        'limit',
-        'filter',
-      ], // Allow these parameters to be duplicated
+      whitelist: ['sort', 'fields', 'page', 'limit', 'filter'], // Allow these parameters to be duplicated
     })
   );
 

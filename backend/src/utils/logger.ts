@@ -2,22 +2,41 @@ import pino from 'pino';
 import { env } from './env.js';
 
 // Create pino logger instance
-const logger = pino({
+const loggerConfig: {
+  level: string;
+  formatters: {
+    level: (label: string) => { level: string };
+  };
+  transport?: {
+    target: string;
+    options: {
+      colorize: boolean;
+      translateTime: string;
+      ignore: string;
+    };
+  };
+} = {
   level: env.NODE_ENV === 'production' ? 'info' : 'debug',
-  transport: env.NODE_ENV !== 'production' ? {
+  formatters: {
+    level: (_label: string) => {
+      return { level: _label };
+    },
+  },
+};
+
+// Add transport only in non-production environments
+if (env.NODE_ENV !== 'production') {
+  loggerConfig.transport = {
     target: 'pino-pretty',
     options: {
       colorize: true,
       translateTime: 'SYS:standard',
       ignore: 'pid,hostname',
-    }
-  } : undefined,
-  formatters: {
-    level: (label) => {
-      return { level: label };
     },
-  },
-});
+  };
+}
+
+const logger = pino(loggerConfig);
 
 // Export the pino instance directly
 export { logger };

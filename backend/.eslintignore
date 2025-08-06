@@ -1,9 +1,0 @@
-dist/
-node_modules/
-*.js
-*.d.ts
-coverage/
-.env
-.env.local
-.env.production
-.env.test

@@ -1,7 +1,7 @@
 import express from 'express';
 import type { Application } from 'express';
 
-import { env, isDevelopment } from '@/utils/env.js';
+import { env } from './utils/env.js';
 import { Logger } from '@/utils/logger.js';
 import { errorHandler, notFoundHandler } from '@/middlewares/errorHandler.js';
 import { applySecurity } from '@/middlewares/security.js';
