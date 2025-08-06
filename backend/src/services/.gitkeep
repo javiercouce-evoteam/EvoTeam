@@ -1,0 +1,8 @@
+# Services directory
+# Place your business logic services here
+
+# Example structure:
+# - userService.ts
+# - authService.ts
+# - emailService.ts
+# etc.

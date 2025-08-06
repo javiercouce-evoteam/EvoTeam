@@ -1,16 +1,45 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Backend API for Pospon App",
+  "type": "module",
+  "main": "dist/index.js",
   "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "clean": "rimraf dist",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "format:check": "prettier --check \"src/**/*.ts\"",
+    "type-check": "tsc --noEmit",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
+  "keywords": ["api", "backend", "express", "typescript"],
   "author": "",
   "license": "ISC",
   "packageManager": "pnpm@10.13.1",
   "dependencies": {
-    "express": "^5.1.0"
+    "express": "4.21.2",
+    "cors": "2.8.5",
+    "helmet": "8.0.0",
+    "morgan": "1.10.0",
+    "dotenv": "16.4.7"
+  },
+  "devDependencies": {
+    "@types/express": "5.0.0",
+    "@types/cors": "2.8.17",
+    "@types/morgan": "1.9.9",
+    "@types/node": "22.10.5",
+    "@typescript-eslint/eslint-plugin": "8.19.1",
+    "@typescript-eslint/parser": "8.19.1",
+    "eslint": "9.18.0",
+    "eslint-config-prettier": "9.1.0",
+    "eslint-plugin-prettier": "5.2.1",
+    "prettier": "3.4.2",
+    "rimraf": "6.0.1",
+    "tsx": "4.19.2",
+    "typescript": "5.7.3"
   }
 }
