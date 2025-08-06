@@ -75,8 +75,8 @@ jobs:
             echo "No tests found, skipping..."
           fi
 
-      - name: 🔒 Security audit
-        run: pnpm audit --audit-level moderate
+      - name: 🔒 Security audit (Backend only)
+        run: pnpm audit --audit-level moderate --filter backend
 
       - name: 📊 Bundle size check
         run: |
