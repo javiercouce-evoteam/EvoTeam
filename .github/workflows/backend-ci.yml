@@ -76,8 +76,8 @@ jobs:
           fi
 
       - name: 🔒 Security audit (Backend only)
-        working-directory: .
-        run: pnpm audit --audit-level moderate --filter "./backend"
+        working-directory: ./backend
+        run: npm audit --audit-level moderate
 
       - name: 📊 Bundle size check
         run: |
