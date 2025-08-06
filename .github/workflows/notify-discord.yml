@@ -26,9 +26,12 @@ jobs:
             PR_TO="${{ github.base_ref }}"
             PR_COMMITS="${{ github.event.pull_request.commits }}"
 
-            jq -n \
+            {
+              echo "**$PR_TITLE**"
+              echo
+              echo "$PR_BODY"
+            } | jq -Rs \
               --arg title "🔀 Pull Request ${PR_ACTION^^}" \
-              --arg desc "**$PR_TITLE**\n\n$PR_BODY" \
               --arg url "$PR_URL" \
               --arg author "$PR_AUTHOR" \
               --arg from "$PR_FROM" \
@@ -37,7 +40,7 @@ jobs:
               '{
                 embeds: [{
                   title: $title,
-                  description: $desc,
+                  description: .,
                   url: $url,
                   color: 5814783,
                   fields: [
